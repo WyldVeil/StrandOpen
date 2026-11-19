@@ -227,7 +227,7 @@ static void pageAbout(Rectangle r) {
     y += c.height + 30;
     gxSectionTitle(x, y, "KEYS");
     y += 24;
-    const char *keys[][2] = { { "Ctrl+K", "search genes, rsIDs, positions, conditions" }, { "Alt+Left / Alt+Right", "back / forward (also mouse side buttons)" },
+    const char *keys[][2] = { { "Ctrl+K", "search genes, rsIDs, positions, conditions" }, { "Ctrl+Q", "close (or the button at the top right)" }, { "Alt+Left / Alt+Right", "back / forward (also mouse side buttons)" },
                               { "Ctrl+plus / minus / 0", "interface size" }, { "Browser: drag, wheel", "pan, zoom around the pointer" },
                               { "Browser: double-click", "zoom in (on a gene: its page)" }, { "Browser: arrows, plus, minus", "pan and zoom" },
                               { "Browser: Shift+wheel", "scroll the reads" } };

@@ -95,7 +95,7 @@ static void exportReport(void) {
     { static const char *const h[] = { "Gene", "Variant", "Copies", "ClinVar", "Conditions", "Inheritance" };
       htmlRows(f, "SELECT v.gene, coalesce(v.hgvs_p, 'chr'||(CASE v.chrom WHEN 23 THEN 'X' WHEN 24 THEN 'Y' WHEN 25 THEN 'MT' ELSE v.chrom END)||':'||v.pos||' '||v.ref||'>'||v.alt), "
                   "CASE v.zyg WHEN 1 THEN 'heterozygous' WHEN 2 THEN 'homozygous' WHEN 3 THEN 'hemizygous' ELSE 'het (2 alts)' END, v.clin_sig, v.clin_dn, "
-                  "(SELECT group_concat(DISTINCT d.inheritance) FROM gene_disease d WHERE d.gene=v.gene_id) FROM variant v WHERE v.clin IN (5,6) ORDER BY v.gene", h, 6); }
+                  "replace((SELECT group_concat(DISTINCT nullif(d.inheritance, '')) FROM gene_disease d WHERE d.gene=v.gene_id), ',', ', ') FROM variant v WHERE v.clin IN (5,6) ORDER BY v.gene", h, 6); }
     fputs("<p class=\"note\">Screened: every ClinVar-classified variant in the genome. A single copy in a recessive (AR) gene means carrier status.</p>", f);
     fputs("<h2>Well-known variants</h2>", f);
     { static const char *const h[] = { "Variant", "Result", "Genotype" };

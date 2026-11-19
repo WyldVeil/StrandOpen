@@ -11,12 +11,12 @@
 #include <math.h>
 #include <stdatomic.h>
 
-#define ST_VERSION "1.0.1"
+#define ST_VERSION "1.1.0"
 
 /* ---- pages ---------------------------------------------------------- */
 typedef enum {
     PG_OVERVIEW, PG_BROWSER, PG_VARIANTS, PG_GENE, PG_HEALTH, PG_CARRIER, PG_PGX, PG_TRAITS,
-    PG_PRS, PG_ANCESTRY, PG_LINEAGE, PG_RAW, PG_ABOUT, PG_RARE, PG_RARITY, PG_PEOPLE, PG_BRIEF, PG_DIET, PG__N
+    PG_PRS, PG_ANCESTRY, PG_LINEAGE, PG_RAW, PG_ABOUT, PG_RARE, PG_RARITY, PG_PEOPLE, PG_BRIEF, PG_DIET, PG_REPORT, PG__N
 } StPage;
 
 /* ---- fonts ---------------------------------------------------------- */

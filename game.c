@@ -31,4 +31,6 @@
 #include "src/page_brief.c"
 #include "src/page_diet.c"
 #include "src/report.c"
+#include "src/pdf.c"
+#include "src/page_report.c"
 #include "src/app.c"

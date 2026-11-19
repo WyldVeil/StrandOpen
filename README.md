@@ -87,6 +87,10 @@ The person in these screenshots is a fictional example.
 
 ![Sources and notes](docs/screenshots/sources.png)
 
+**Report generator**: a PDF of the sections you choose, to keep, print or take to a doctor
+
+![Report generator](docs/screenshots/report.png)
+
 ## Getting started
 
 Download `StrandOpen-<version>-linux-x86_64.tar.gz` from the Releases page,
@@ -142,6 +146,7 @@ assumption.
 | remarkable variants (short sleep, low LDL, infection resistance...) | the ones on the chip | yes |
 | rare variants, your rarest variants | no: rare chip calls are mostly wrong (Weedon et al. 2021, BMJ) | yes |
 | Neanderthal DNA | no | whole genomes |
+| a PDF report of the sections you choose, with light or dark pages | yes | yes |
 
 Chip calls and single sequencing calls can be wrong. This is a tool for
 curiosity and for preparing questions, not a medical test: anything that

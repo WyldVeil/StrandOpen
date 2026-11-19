@@ -16,6 +16,10 @@ cp build/portable/strandopen "$D/strandopen"
 rsync -a --exclude '__pycache__/' --exclude '*.pyc' --exclude '*.log' pipeline/ "$D/pipeline/"
 rsync -a data/ "$D/data/"
 cp -a build/runtime "$D/runtime"
+# Python's bytecode caches record the absolute path they were written from (a test run on
+# this machine): none ship; Python rebuilds them on the user's machine as it needs them
+find "$D" -type d -name __pycache__ -prune -exec rm -rf {} +
+find "$D" -type f -name '*.pyc' -delete
 cp README.md LICENSE "$D/"
 [ -d docs ] && rsync -a docs/ "$D/docs/"
 mkdir -p "$D/share"
@@ -53,10 +57,14 @@ DESK
 echo "Added: $A/strandopen.desktop"
 EOF
 chmod +x "$D/add-to-menu.sh" "$D/strandopen"
-# nothing from the build machine
-if grep -rIl "$HOME" "$D" | grep -q . || strings "$D/strandopen" | grep -q "$HOME"; then
-    echo "the release mentions the build machine's home folder:"; grep -rIl "$HOME" "$D" | head; strings "$D/strandopen" | grep "$HOME" | head -3; exit 1
+# nothing from the build machine, in any file, binaries included. The result is captured, not piped
+# into "grep -q": under pipefail grep -q's early exit makes the writer die of SIGPIPE, the pipe
+# reads as failed and a hit would pass unnoticed.
+leaks=$(grep -rlaF -- "$HOME" "$D" || true)
+if [ -n "$leaks" ]; then
+    echo "the release mentions the build machine's home folder:"; echo "$leaks" | head; exit 1
 fi
+tools/check_public.sh "$D" || { echo "release stopped: private details in $D"; exit 1; }
 tar -C dist -czf "dist/$NAME.tar.gz" "$NAME"
 du -sh "$D" "dist/$NAME.tar.gz"
 echo "release ready: dist/$NAME.tar.gz"

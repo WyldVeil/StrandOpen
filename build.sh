@@ -60,11 +60,14 @@ case "${1:-native}" in
         # is the compiler environment it creates)
         BE="${BUILDENV:-/tmp/strandopen-buildenv}"
         CC="$BE/bin/x86_64-conda-linux-gnu-gcc"
-        RLFLAGS+=(-I"$BE/include")
+        # source paths (__FILE__ in vendored asserts) relative, so the binary names no folder of the build machine
+        PFX=(-ffile-prefix-map="$ROOT"=.)
+        RLFLAGS+=(-I"$BE/include" "${PFX[@]}")
+        SQLFLAGS+=("${PFX[@]}")
         B="$B/portable"
         mkdir -p "$B/obj"
         objs
-        "$CC" "${STD[@]}" -O2 "${WARN[@]}" "${INC[@]}" -I"$BE/include" -o "$B/strandopen" "$ROOT/game.c" "${OBJS[@]}" \
+        "$CC" "${STD[@]}" -O2 "${PFX[@]}" "${WARN[@]}" "${INC[@]}" -I"$BE/include" -o "$B/strandopen" "$ROOT/game.c" "${OBJS[@]}" \
             -L"$BE/lib" -static-libgcc "${LIBS[@]}"
         echo "newest glibc symbol needed: $(objdump -T "$B/strandopen" | grep -o 'GLIBC_[0-9.]*' | sort -V | tail -1)"
         ls -la "$B/strandopen" ;;

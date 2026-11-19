@@ -66,6 +66,7 @@ static char *xstrdup(const char *s) {
 static char g_appDir[PATH_MAX];      /* where the binary lives (bundled tools: runtime/bin beside build/) */
 static char g_cfgDir[PATH_MAX];      /* $XDG_CONFIG_HOME/StrandOpen */
 static char g_argProfile[64];        /* --profile SLUG */
+static bool g_quitNow;               /* the close button or Ctrl+Q: leave the frame loop, shut down as usual */
 
 static bool mkdirs(const char *path, mode_t mode) {
     char tmp[PATH_MAX];
@@ -262,7 +263,7 @@ static int appMain(const AppDef *d, int argc, char **argv) {
     d->init();
     if (enter && d->enter) d->enter(enter);
     int frames = 0;
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose() && !g_quitNow) {
         BeginDrawing();
         d->frame(GetFrameTime(), GetTime());
         bool shoot = shotPath && ++frames >= shotFrames;

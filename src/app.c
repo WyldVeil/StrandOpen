@@ -127,6 +127,7 @@ static const NavItem g_navItems[] = {
     { PG_LINEAGE, "Lineage", icTree, NULL },
     { PG_RAW, "Raw data & QC", icFile, "DATA" },
     { PG_ABOUT, "Sources & notes", icInfo, NULL },
+    { PG_REPORT, "Report generator", icFile, NULL },
 };
 static void sidebar(Rectangle r) {
     drRect(r, TH->side);
@@ -356,7 +357,10 @@ static void topBar(Rectangle r) {
     /* where we are */
     const char *crumb = "";
     for (size_t i = 0; i < NELEMS(g_navItems); i++) if (g_navItems[i].page == navCur()->page) crumb = g_navItems[i].label;
-    txtIn(F_REG, TH->fsSmall, (Rectangle){ r.x + r.width - 300, r.y, 280, r.height }, TH->faint, 2, crumb);
+    txtIn(F_REG, TH->fsSmall, (Rectangle){ r.x + r.width - 344, r.y, 280, r.height }, TH->faint, 2, crumb);
+    /* close: a borderless or full-screen window has no title bar, so the app offers its own (and Ctrl+Q) */
+    if (gxIconButton(gxId("app close"), (Rectangle){ r.x + r.width - 46, r.y + 12, 30, 30 }, icClose, false, "Close Strand Open (Ctrl+Q)"))
+        g_quitNow = true;
 }
 
 /* ---- pages ----------------------------------------------------------------- */
@@ -382,6 +386,7 @@ static void pageDraw(Rectangle r) {
     case PG_PEOPLE: pagePeople(r); break;
     case PG_BRIEF: pageBrief(r); break;
     case PG_DIET: pageDiet(r); break;
+    case PG_REPORT: pageReport(r); break;
     default: break;
     }
 }
@@ -408,6 +413,7 @@ static void stShortcuts(void) {
     bool ctrl = IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL);
     bool alt = IsKeyDown(KEY_LEFT_ALT) || IsKeyDown(KEY_RIGHT_ALT);
     if (ctrl && IsKeyPressed(KEY_K)) { gxFocus(g_searchId, "", false); }
+    if (ctrl && IsKeyPressed(KEY_Q)) g_quitNow = true;
     if (alt && IsKeyPressed(KEY_LEFT)) navBack();
     if (alt && IsKeyPressed(KEY_RIGHT)) navFwd();
     if (IsMouseButtonPressed(3)) navBack();
@@ -455,6 +461,8 @@ static void stFrame(float dt, double now) {
         drRect((Rectangle){ 0, 0, W, 54 }, TH->side);
         icHelix((Rectangle){ 22, 14, 18, 26 }, TH->accent);
         txt(F_SEMI, 20, 50, 16, TH->text, "Strand Open");
+        if (gxIconButton(gxId("app close"), (Rectangle){ W - 46, 12, 30, 30 }, icClose, false, "Close Strand Open (Ctrl+Q)")) g_quitNow = true;
+        if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_Q)) g_quitNow = true;
         Rectangle content = { 0, 54, W, H - 54 };
         gxClipPush(content);
         pagePeople(content);
@@ -521,7 +529,7 @@ static void stEnter(const char *name) {
         { "overview", PG_OVERVIEW }, { "browser", PG_BROWSER }, { "variants", PG_VARIANTS }, { "gene", PG_GENE },
         { "health", PG_HEALTH }, { "carrier", PG_CARRIER }, { "pgx", PG_PGX }, { "traits", PG_TRAITS },
         { "prs", PG_PRS }, { "ancestry", PG_ANCESTRY }, { "lineage", PG_LINEAGE }, { "raw", PG_RAW }, { "about", PG_ABOUT }, { "rare", PG_RARE }, { "rarity", PG_RARITY },
-        { "brief", PG_BRIEF }, { "people", PG_PEOPLE }, { "diet", PG_DIET },
+        { "brief", PG_BRIEF }, { "people", PG_PEOPLE }, { "diet", PG_DIET }, { "report", PG_REPORT },
     };
     if (!g_stReady) return;
     char page[64] = "", arg[128] = "";
@@ -539,6 +547,13 @@ static void stEnter(const char *name) {
     }
     if (!strcmp(page, "variant") && arg[0]) navVariant(atoll(arg));
     if (!strcmp(page, "variants") && arg[0]) variantsShow(atoi(arg), "", -1);   /* a scope: 2 protein-altering, 3 high impact, ... */
+    if (!strcmp(page, "report") && !strncmp(arg, "create", 6)) {                  /* a test hook: report:create[,all][,dark][,doctor] */
+        rpLoadChoices();
+        if (strstr(arg, "all")) for (int i = 0; i < RP__N; i++) g_rpOn[i] = true;
+        if (strstr(arg, "doctor")) for (int i = 0; i < RP__N; i++) g_rpOn[i] = g_rpSec[i].doctor;
+        g_rpDark = strstr(arg, "dark") != NULL;
+        rpCreate();
+    }
     if (!strcmp(page, "export")) exportReport();
     /* a tab jump lands at the top of that tab, as a click on the tab does */
     if (!strcmp(page, "health") && arg[0]) { g_hTab = clampi(atoi(arg), 0, (int)NELEMS(g_hTabs) - 1); g_hScroll = (GxScroll){ 0 }; }

@@ -11,7 +11,7 @@
 #include <math.h>
 #include <stdatomic.h>
 
-#define ST_VERSION "1.0.0"
+#define ST_VERSION "1.0.1"
 
 /* ---- pages ---------------------------------------------------------- */
 typedef enum {

@@ -443,7 +443,7 @@ static void vxCell(int row, int col, Rectangle c, bool sel, void *u) {
     case 5: txtIn(F_REG, fs, c, rnull(pg, i, 10) ? TH->warn : TH->text, 2, fmtAf(rf(pg, i, 10))); break;
     case 6: { int cl = (int)ri(pg, i, 11); if (cl) txtIn(F_REG, fs, c, clinColor(cl), 0, clinName(cl)); break; }
     case 7: if (!rnull(pg, i, 12)) { double am = rf(pg, i, 12); txtIn(F_REG, fs, c, am > 0.564 ? TH->bad : am > 0.34 ? TH->warn : TH->dim, 2, sstr("%.2f", am)); } break;
-    case 8: txtIn(F_REG, fs, c, ri(pg, i, 15) ? TH->dim : TH->warn, 2, sstr("%lld", ri(pg, i, 13))); break;
+    case 8: txtIn(F_REG, fs, c, ri(pg, i, 15) ? TH->dim : TH->warn, 2, ri(pg, i, 13) > 0 ? sstr("%lld", ri(pg, i, 13)) : "-"); break;   /* no depth in chips and some VCFs */
     }
 }
 static void variantsShow(int scope, const char *text, long long sel) {

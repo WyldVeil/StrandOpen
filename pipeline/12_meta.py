@@ -62,7 +62,8 @@ for key in sorted(x for x in prof if x.startswith("input.")):
 for p, ftype, about in [(GVCF, "gVCF", "Your calls converted to GRCh38 (made by the import)"),
                         (DBPATH, "SQLite", "This person's genome database")]:
     if os.path.exists(p):
-        cur.execute("INSERT INTO files VALUES(?,?,?,?,?)", (os.path.basename(p), os.path.getsize(p), ftype, about, k))
+        # the database is built as next.db and renamed when the import succeeds
+        cur.execute("INSERT INTO files VALUES(?,?,?,?,?)", ("strand.db" if p == DBPATH else os.path.basename(p), os.path.getsize(p), ftype, about, k))
         k += 1
 
 # FASTQ quality

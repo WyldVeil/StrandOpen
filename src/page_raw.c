@@ -202,7 +202,7 @@ static void pageAbout(Rectangle r) {
         { "Secondary findings", "ACMG SF v3.3 gene list (Lee et al. 2025, Genetics in Medicine)." },
         { "Medications", sstr("%s, with CPIC and DPWG guidelines and FDA label annotations; PharmGKB clinical annotations.", dbMeta("pgx_tool")) },
         { "Research associations", "NHGRI-EBI GWAS Catalog (associations at p < 5e-8)." },
-        { "Lineages", sstr("%s; %s.", dbMeta("mt_tree"), dbMeta("y_tree")) },
+        { "Lineages", sstr("%s%s%s.", dbMeta("mt_tree"), *dbMeta("mt_tree") && *dbMeta("y_tree") ? "; " : "", dbMeta("y_tree")) },
         { "Traits", "A curated panel of replicated single-variant traits, each allele checked against 1000 Genomes frequencies (strand guard)." },
     };
     for (size_t i = 0; i < NELEMS(src); i++) {

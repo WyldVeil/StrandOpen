@@ -115,7 +115,7 @@ static float findingCard(Rectangle c, Rows *r, int i, bool draw) {
     if (gxButtonEx(gxIdN(21000 + i), (Rectangle){ c.x + c.width - 230, y, 100, 26 }, "Details", BTN_NORMAL, true, NULL)) {
         variantsShow(0, gene, ri(r, i, 0));
     }
-    if (gxButtonEx(gxIdN(22000 + i), (Rectangle){ c.x + c.width - 122, y, 100, 26 }, "See reads", BTN_GHOST, true, "Open the position in the genome browser"))
+    if (gxButtonEx(gxIdN(22000 + i), (Rectangle){ c.x + c.width - 122, y, 100, 26 }, dkReads() ? "See reads" : "In the browser", BTN_GHOST, true, "Open the position in the genome browser"))
         navVariant(ri(r, i, 0));
     if (gxBoxClick(gxIdN(20500 + i), c)) { lkBegin(sstr("%s %s", gene, rc(r, i, 2))); lkVariant(ri(r, i, 0)); lkGene(gene); lkOpen(); }
     return h;

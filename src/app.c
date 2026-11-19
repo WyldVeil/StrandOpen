@@ -538,6 +538,7 @@ static void stEnter(const char *name) {
         }
     }
     if (!strcmp(page, "variant") && arg[0]) navVariant(atoll(arg));
+    if (!strcmp(page, "variants") && arg[0]) variantsShow(atoi(arg), "", -1);   /* a scope: 2 protein-altering, 3 high impact, ... */
     if (!strcmp(page, "export")) exportReport();
     /* a tab jump lands at the top of that tab, as a click on the tab does */
     if (!strcmp(page, "health") && arg[0]) { g_hTab = clampi(atoi(arg), 0, (int)NELEMS(g_hTabs) - 1); g_hScroll = (GxScroll){ 0 }; }

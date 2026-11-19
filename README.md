@@ -15,6 +15,10 @@ reference data; nothing about anyone's genome is sent anywhere.
 
 The person in these screenshots is a fictional example.
 
+**People**: add anyone's raw DNA file; imports run in the background
+
+![People](docs/screenshots/people.png)
+
 **In brief**: the findings worth knowing first, each with what it means
 
 ![In brief](docs/screenshots/brief.png)
@@ -23,17 +27,33 @@ The person in these screenshots is a fictional example.
 
 ![Overview](docs/screenshots/overview.png)
 
-**Ancestry**: composition, world and European maps, painted chromosomes
+**Genome browser**: genes, variants and coverage at any zoom
 
-![Ancestry](docs/screenshots/ancestry.png)
+![Genome browser](docs/screenshots/browser.png)
 
-**Lineage**: where the maternal line comes from, and ancient people on it
+**Variants**: every call, filtered by effect, ClinVar class, zygosity or frequency
 
-![Lineage](docs/screenshots/lineage.png)
+![Variants](docs/screenshots/variants.png)
+
+**Genes**: the genes worth a look, the ACMG list and the pharmacogenes
+
+![Genes](docs/screenshots/genes.png)
 
 **Rare and remarkable**: notable variants in plain words
 
 ![Rare and remarkable](docs/screenshots/remarkable.png)
+
+**Clinical findings**: ClinVar, risk factors, ACMG genes and well-known variants
+
+![Clinical findings](docs/screenshots/clinical.png)
+
+**Carrier status**: recessive conditions carried in one copy
+
+![Carrier status](docs/screenshots/carrier.png)
+
+**Medications**: PharmCAT results with CPIC and DPWG guidance
+
+![Medications](docs/screenshots/medications.png)
 
 **Diet and supplements**: what genes can and cannot say, graded by evidence
 
@@ -43,17 +63,29 @@ The person in these screenshots is a fictional example.
 
 ![Polygenic scores](docs/screenshots/scores.png)
 
-**Medications**: PharmCAT results with CPIC and DPWG guidance
+**Your rarest variants**: how rare each variant is around the world
 
-![Medications](docs/screenshots/medications.png)
+![Your rarest variants](docs/screenshots/rarest.png)
 
-**Genome browser**: genes, variants and coverage at any zoom
+**Traits**: what well-studied variants say about looks, taste and body
 
-![Genome browser](docs/screenshots/browser.png)
+![Traits](docs/screenshots/traits.png)
 
-**People**: add anyone's raw DNA file; imports run in the background
+**Ancestry**: composition, world and European maps, painted chromosomes
 
-![People](docs/screenshots/people.png)
+![Ancestry](docs/screenshots/ancestry.png)
+
+**Lineage**: where the maternal line comes from, and ancient people on it
+
+![Lineage](docs/screenshots/lineage.png)
+
+**Raw data and quality**: what the file contained and how good it is
+
+![Raw data and quality](docs/screenshots/raw.png)
+
+**Sources and notes**: every data source, and a summary for a doctor
+
+![Sources and notes](docs/screenshots/sources.png)
 
 ## Getting started
 

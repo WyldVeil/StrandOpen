@@ -15,18 +15,45 @@ reference data; nothing about anyone's genome is sent anywhere.
 
 The person in these screenshots is a fictional example.
 
-| | |
-|---|---|
-| ![In brief](docs/screenshots/brief.png) | ![Overview](docs/screenshots/overview.png) |
-| **In brief**: the findings worth knowing first, each with what it means | **Overview**: counts, chromosomes, findings, lines and scores |
-| ![Ancestry](docs/screenshots/ancestry.png) | ![Lineage](docs/screenshots/lineage.png) |
-| **Ancestry**: composition, world and European maps, painted chromosomes | **Lineage**: where the maternal line comes from, and ancient people on it |
-| ![Rare and remarkable](docs/screenshots/remarkable.png) | ![Diet and supplements](docs/screenshots/diet.png) |
-| **Rare and remarkable**: notable variants in plain words | **Diet and supplements**: what genes can and cannot say, graded |
-| ![Polygenic scores](docs/screenshots/scores.png) | ![Medications](docs/screenshots/medications.png) |
-| **Polygenic scores**: placed among people of the same ancestry | **Medications**: PharmCAT results with CPIC and DPWG guidance |
-| ![Genome browser](docs/screenshots/browser.png) | ![People](docs/screenshots/people.png) |
-| **Genome browser**: genes, variants and coverage at any zoom | **People**: add anyone's raw DNA file; imports run in the background |
+**In brief**: the findings worth knowing first, each with what it means
+
+![In brief](docs/screenshots/brief.png)
+
+**Overview**: counts, chromosomes, findings, lines and scores
+
+![Overview](docs/screenshots/overview.png)
+
+**Ancestry**: composition, world and European maps, painted chromosomes
+
+![Ancestry](docs/screenshots/ancestry.png)
+
+**Lineage**: where the maternal line comes from, and ancient people on it
+
+![Lineage](docs/screenshots/lineage.png)
+
+**Rare and remarkable**: notable variants in plain words
+
+![Rare and remarkable](docs/screenshots/remarkable.png)
+
+**Diet and supplements**: what genes can and cannot say, graded by evidence
+
+![Diet and supplements](docs/screenshots/diet.png)
+
+**Polygenic scores**: placed among people of the same ancestry
+
+![Polygenic scores](docs/screenshots/scores.png)
+
+**Medications**: PharmCAT results with CPIC and DPWG guidance
+
+![Medications](docs/screenshots/medications.png)
+
+**Genome browser**: genes, variants and coverage at any zoom
+
+![Genome browser](docs/screenshots/browser.png)
+
+**People**: add anyone's raw DNA file; imports run in the background
+
+![People](docs/screenshots/people.png)
 
 ## Getting started
 

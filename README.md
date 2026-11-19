@@ -1,5 +1,7 @@
 # Strand Open
 
+[![Found it useful? Buy me a coffee](https://img.shields.io/badge/Found_it_useful%3F-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/wyldveil)
+
 A genome explorer for Linux that works from the raw DNA file you already
 have. Give it a consumer chip export (23andMe, AncestryDNA, MyHeritage,
 FamilyTreeDNA, LivingDNA and similar) or a VCF/gVCF from whole-genome

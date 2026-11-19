@@ -1,0 +1,1 @@
+Natural Earth 1:50m land (public domain), https://www.naturalearthdata.com/ via github.com/nvkelso/natural-earth-vector; outer rings, points thinned to 0.03 degrees

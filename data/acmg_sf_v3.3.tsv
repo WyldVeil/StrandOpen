@@ -1,0 +1,85 @@
+gene	category	disease	inheritance	report
+APC	Cancer Predisposition	Familial adenomatous polyposis (FAP)	AD	All P and LP
+RET	Cancer Predisposition	Familial medullary thyroid cancer/Multiple endocrine neoplasia 2	AD	All P and LP
+BRCA1	Cancer Predisposition	Hereditary breast and/or ovarian cancer	AD	All P and LP
+BRCA2	Cancer Predisposition	Hereditary breast and/or ovarian cancer	AD	All P and LP
+PALB2	Cancer Predisposition	Hereditary breast and/or ovarian cancer	AD	All P and LP
+SDHD	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+SDHAF2	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+SDHC	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+SDHB	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+MAX	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+TMEM127	Cancer Predisposition	Hereditary paragangliomapheochromocytoma syndrome	AD	All P and LP
+BMPR1A	Cancer Predisposition	Juvenile polyposis syndrome (JPS)	AD	All P and LP
+SMAD4	Cancer Predisposition	Juvenile polyposis syndrome (JPS)/Hereditary hemorrhagic telangiectasia syndrome	AD	All P and LP
+TP53	Cancer Predisposition	Li-Fraumeni syndrome	AD	All P and LP
+MLH1	Cancer Predisposition	Lynch syndrome/Hereditary non-polyposis colorectal cancer (HNPCC)	AD	All P and LP
+MSH2	Cancer Predisposition	Lynch syndrome/Hereditary non-polyposis colorectal cancer (HNPCC)	AD	All P and LP
+MSH6	Cancer Predisposition	Lynch syndrome/Hereditary non-polyposis colorectal cancer (HNPCC)	AD	All P and LP
+PMS2	Cancer Predisposition	Lynch syndrome/Hereditary non-polyposis colorectal cancer (HNPCC)	AD	All P and LP
+MEN1	Cancer Predisposition	Multiple endocrine neoplasia type 1	AD	All P and LP
+MUTYH	Cancer Predisposition	MUTYH -associated polyposis (MAP)	AR	P and LP (2 variants)
+NF2	Cancer Predisposition	NF2-related schwannomatosis	AD	All P and LP
+STK11	Cancer Predisposition	Peutz-Jeghers syndrome (PJS)	AD	All P and LP
+PTEN	Cancer Predisposition	PTEN hamartoma tumor syndrome	AD	All P and LP
+RB1	Cancer Predisposition	Retinoblastoma	AD	All P and LP
+TSC1	Cancer Predisposition	Tuberous sclerosis complex	AD	All P and LP
+TSC2	Cancer Predisposition	Tuberous sclerosis complex	AD	All P and LP
+VHL	Cancer Predisposition	von Hippel-Lindau syndrome	AD	All P and LP
+WT1	Cancer Predisposition	WT1 -related Wilms tumor	AD	All P and LP
+FBN1	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+TGFBR1	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+TGFBR2	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+SMAD3	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+ACTA2	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+MYH11	Cardiovascular Disease Predisposition	Aortopathies	AD	All P and LP
+PKP2	Cardiovascular Disease Predisposition	Arrhythmogenic right ventricular cardiomyopathy (a subcategory of Arrhythmogenic Cardiomyopathy or ACM)	AD	All P and LP
+DSP	Cardiovascular Disease Predisposition	Arrhythmogenic right ventricular cardiomyopathy (a subcategory of Arrhythmogenic Cardiomyopathy or ACM)	AD	All P and LP
+DSC2	Cardiovascular Disease Predisposition	Arrhythmogenic right ventricular cardiomyopathy (a subcategory of Arrhythmogenic Cardiomyopathy or ACM)	AD	All P and LP
+TMEM43	Cardiovascular Disease Predisposition	Arrhythmogenic right ventricular cardiomyopathy (a subcategory of Arrhythmogenic Cardiomyopathy or ACM)	AD	All P and LP
+DSG2	Cardiovascular Disease Predisposition	Arrhythmogenic right ventricular cardiomyopathy (a subcategory of Arrhythmogenic Cardiomyopathy or ACM)	AD	All P and LP
+RYR2	Cardiovascular Disease Predisposition	Catecholaminergic polymorphic ventricular tachycardia	AD AR AR	All P and LP P and LP (2 variants)
+CASQ2	Cardiovascular Disease Predisposition	Catecholaminergic polymorphic ventricular tachycardia	AD AR AR	All P and LP P and LP (2 variants)
+TRDN	Cardiovascular Disease Predisposition	Catecholaminergic polymorphic ventricular tachycardia	AD AR AR	All P and LP P and LP (2 variants)
+TNNT2	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+LMNA	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+FLNC	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+TTN	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+BAG3	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+DES	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+RBM20	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+TNNC1	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+PLN	Cardiovascular Disease Predisposition	Dilated cardiomyopathy	AD	All P and LP (See text)
+COL3A1	Cardiovascular Disease Predisposition	Ehlers-Danlos syndrome, vascular type	AD	All P and LP
+LDLR	Cardiovascular Disease Predisposition	Familial hypercholesterolemia	SD AD AD	All P and LP
+APOB	Cardiovascular Disease Predisposition	Familial hypercholesterolemia	SD AD AD	All P and LP
+PCSK9	Cardiovascular Disease Predisposition	Familial hypercholesterolemia	SD AD AD	All P and LP
+MYH7	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+MYBPC3	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+TNNI3	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+TPM1	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+MYL3	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+ACTC1	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+PRKAG2	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+MYL2	Cardiovascular Disease Predisposition	Hypertrophic cardiomyopathy	AD	All P and LP
+KCNQ1	Cardiovascular Disease Predisposition	Long QT syndrome types 1 and 2	AD	All P and LP
+KCNH2	Cardiovascular Disease Predisposition	Long QT syndrome types 1 and 2	AD	All P and LP
+SCN5A	Cardiovascular Disease Predisposition	Long QT syndrome 3; Brugada syndrome	AD	All P and LP
+CALM1	Cardiovascular Disease Predisposition	Long QT syndrome types 14-16	AD AD AD	All P and LP
+CALM2	Cardiovascular Disease Predisposition	Long QT syndrome types 14-16	AD AD AD	All P and LP
+CALM3	Cardiovascular Disease Predisposition	Long QT syndrome types 14-16	AD AD AD	All P and LP
+BTD	Inborn Errors of Metabolism	Biotinidase deficiency	AR	P and LP (2 variants)
+CYP27A1	Inborn Errors of Metabolism	Cerebrotendinous xanthomatosis	AR	P and LP (2 variants)
+GLA	Inborn Errors of Metabolism	Fabry disease	XL	All hemi, het, homozygous P and LP
+HFE	Inborn Errors of Metabolism	Hereditary hemochromatosis	AR	HFE p.C282Y j homozygotes only
+OTC	Inborn Errors of Metabolism	Ornithine transcarbamylase deficiency	XL	All hemi, het, homozygous P and LP
+GAA	Inborn Errors of Metabolism	Pompe disease	AR	P and LP (2 variants)
+ABCD1	Inborn Errors of Metabolism	X-linked adrenoleukodystrophy k	XL	All hemi, homozygous or two het. P and/or LP
+ACVRL1	Other Disease Phenotypes	Hereditary hemorrhagic telangiectasia	AD	All P and LP
+ENG	Other Disease Phenotypes	Hereditary hemorrhagic telangiectasia	AD	All P and LP
+TTR	Other Disease Phenotypes	Hereditary TTR (transthyretin) amyloidosis	AD	All P and LP
+RYR1	Other Disease Phenotypes	Malignant hyperthermia	AD	All P and LP
+CACNA1S	Other Disease Phenotypes	Malignant hyperthermia	AD	All P and LP
+HNF1A	Other Disease Phenotypes	Maturity-Onset of Diabetes of the Young	AD	All P and LP
+RPE65	Other Disease Phenotypes	RPE65 -related retinopathy	AR	P and LP (2 variants)
+ATP7B	Other Disease Phenotypes	Wilson disease	AR	P and LP (2 variants)

@@ -1,0 +1,290 @@
+{
+ "rs10455872": {
+  "alleles": "A/G",
+  "chrom": "6",
+  "end": 160589086,
+  "start": 160589086
+ },
+ "rs1110400": {
+  "alleles": "T/C",
+  "chrom": "16",
+  "end": 89919722,
+  "start": 89919722
+ },
+ "rs11547464": {
+  "alleles": "G/A",
+  "chrom": "16",
+  "end": 89919683,
+  "start": 89919683
+ },
+ "rs1160312": {
+  "alleles": "A/C/G/T",
+  "chrom": "20",
+  "end": 22069865,
+  "start": 22069865
+ },
+ "rs11803731": {
+  "alleles": "A/C/G/T",
+  "chrom": "1",
+  "end": 152110849,
+  "start": 152110849
+ },
+ "rs12203592": {
+  "alleles": "C/G/T",
+  "chrom": "6",
+  "end": 396321,
+  "start": 396321
+ },
+ "rs1229984": {
+  "alleles": "T/A/C/G",
+  "chrom": "4",
+  "end": 99318162,
+  "start": 99318162
+ },
+ "rs12913832": {
+  "alleles": "A/C/G",
+  "chrom": "15",
+  "end": 28120472,
+  "start": 28120472
+ },
+ "rs1426654": {
+  "alleles": "A/C/G/T",
+  "chrom": "15",
+  "end": 48134287,
+  "start": 48134287
+ },
+ "rs16891982": {
+  "alleles": "C/A/G",
+  "chrom": "5",
+  "end": 33951588,
+  "start": 33951588
+ },
+ "rs16969968": {
+  "alleles": "G/A",
+  "chrom": "15",
+  "end": 78590583,
+  "start": 78590583
+ },
+ "rs174537": {
+  "alleles": "G/C/T",
+  "chrom": "11",
+  "end": 61785208,
+  "start": 61785208
+ },
+ "rs17580": {
+  "alleles": "T/A",
+  "chrom": "14",
+  "end": 94380925,
+  "start": 94380925
+ },
+ "rs17822931": {
+  "alleles": "C/A/G/T",
+  "chrom": "16",
+  "end": 48224287,
+  "start": 48224287
+ },
+ "rs1799945": {
+  "alleles": "C/G/T",
+  "chrom": "6",
+  "end": 26090951,
+  "start": 26090951
+ },
+ "rs1799963": {
+  "alleles": "G/A",
+  "chrom": "11",
+  "end": 46739505,
+  "start": 46739505
+ },
+ "rs1800562": {
+  "alleles": "G/A/T",
+  "chrom": "6",
+  "end": 26092913,
+  "start": 26092913
+ },
+ "rs1801133": {
+  "alleles": "G/A/C/T",
+  "chrom": "1",
+  "end": 11796321,
+  "start": 11796321
+ },
+ "rs1805006": {
+  "alleles": "C/A/G",
+  "chrom": "16",
+  "end": 89919510,
+  "start": 89919510
+ },
+ "rs1805007": {
+  "alleles": "C/A/G/T",
+  "chrom": "16",
+  "end": 89919709,
+  "start": 89919709
+ },
+ "rs1805008": {
+  "alleles": "C/A/T",
+  "chrom": "16",
+  "end": 89919736,
+  "start": 89919736
+ },
+ "rs1805009": {
+  "alleles": "G/A/C/T",
+  "chrom": "16",
+  "end": 89920138,
+  "start": 89920138
+ },
+ "rs1815739": {
+  "alleles": "C/A/T",
+  "chrom": "11",
+  "end": 66560624,
+  "start": 66560624
+ },
+ "rs2187668": {
+  "alleles": "C/A/G/T",
+  "chrom": "6",
+  "end": 32638107,
+  "start": 32638107
+ },
+ "rs2282679": {
+  "alleles": "T/A/C/G",
+  "chrom": "4",
+  "end": 71742666,
+  "start": 71742666
+ },
+ "rs2395182": {
+  "alleles": "G/A/C/T",
+  "chrom": "6",
+  "end": 32445540,
+  "start": 32445540
+ },
+ "rs2472297": {
+  "alleles": "C/A/T",
+  "chrom": "15",
+  "end": 74735539,
+  "start": 74735539
+ },
+ "rs28929474": {
+  "alleles": "C/A/G/T",
+  "chrom": "14",
+  "end": 94378610,
+  "start": 94378610
+ },
+ "rs333": {
+  "alleles": "ACAGTCAGTATCAATTCTGGAAGAATTTCCAGACA/ACA",
+  "chrom": "3",
+  "end": 46373487,
+  "start": 46373453
+ },
+ "rs3798220": {
+  "alleles": "T/C",
+  "chrom": "6",
+  "end": 160540105,
+  "start": 160540105
+ },
+ "rs3827760": {
+  "alleles": "A/C/G",
+  "chrom": "2",
+  "end": 108897145,
+  "start": 108897145
+ },
+ "rs429358": {
+  "alleles": "T/C",
+  "chrom": "19",
+  "end": 44908684,
+  "start": 44908684
+ },
+ "rs4481887": {
+  "alleles": "A/G/T",
+  "chrom": "1",
+  "end": 248333561,
+  "start": 248333561
+ },
+ "rs4639334": {
+  "alleles": "G/A",
+  "chrom": "6",
+  "end": 32634437,
+  "start": 32634437
+ },
+ "rs4680": {
+  "alleles": "G/A",
+  "chrom": "22",
+  "end": 19963748,
+  "start": 19963748
+ },
+ "rs4713586": {
+  "alleles": "A/C/G/T",
+  "chrom": "6",
+  "end": 32691805,
+  "start": 32691805
+ },
+ "rs4988235": {
+  "alleles": "G/A/C/T",
+  "chrom": "2",
+  "end": 135851076,
+  "start": 135851076
+ },
+ "rs505922": {
+  "alleles": "C/T",
+  "chrom": "9",
+  "end": 133273813,
+  "start": 133273813
+ },
+ "rs601338": {
+  "alleles": "G/A",
+  "chrom": "19",
+  "end": 48703417,
+  "start": 48703417
+ },
+ "rs6025": {
+  "alleles": "C/A/G/T",
+  "chrom": "1",
+  "end": 169549811,
+  "start": 169549811
+ },
+ "rs671": {
+  "alleles": "G/A",
+  "chrom": "12",
+  "end": 111803962,
+  "start": 111803962
+ },
+ "rs713598": {
+  "alleles": "C/A/G/T",
+  "chrom": "7",
+  "end": 141973545,
+  "start": 141973545
+ },
+ "rs72921001": {
+  "alleles": "C/A/G",
+  "chrom": "11",
+  "end": 6868417,
+  "start": 6868417
+ },
+ "rs7412": {
+  "alleles": "C/T",
+  "chrom": "19",
+  "end": 44908822,
+  "start": 44908822
+ },
+ "rs7454108": {
+  "alleles": "T/C",
+  "chrom": "6",
+  "end": 32713706,
+  "start": 32713706
+ },
+ "rs762551": {
+  "alleles": "C/A/G",
+  "chrom": "15",
+  "end": 74749576,
+  "start": 74749576
+ },
+ "rs7775228": {
+  "alleles": "T/A/C",
+  "chrom": "6",
+  "end": 32690302,
+  "start": 32690302
+ },
+ "rs8176746": {
+  "alleles": "G/A/C/T",
+  "chrom": "9",
+  "end": 133255935,
+  "start": 133255935
+ }
+}

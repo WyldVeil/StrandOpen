@@ -2,8 +2,8 @@
 
 [![Found it useful? Buy me a coffee](https://img.shields.io/badge/Found_it_useful%3F-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/wyldveil)
 
-A genome explorer for Linux that works from the raw DNA file you already
-have. Give it a consumer chip export (23andMe, AncestryDNA, MyHeritage,
+A genome explorer for Linux and Windows that works from the raw DNA file
+you already have. Give it a consumer chip export (23andMe, AncestryDNA, MyHeritage,
 FamilyTreeDNA, LivingDNA and similar) or a VCF/gVCF from whole-genome
 sequencing, and it turns it into something you can browse: every variant,
 every gene, what ClinVar and the other big databases say, how your genes
@@ -95,15 +95,22 @@ The person in these screenshots is a fictional example.
 
 ## Getting started
 
-Download `StrandOpen-<version>-linux-x86_64.tar.gz` from the Releases page,
-unpack it anywhere and run `./strandopen` inside (`./add-to-menu.sh` adds it
-to your application menu). Everything it needs is in the folder: nothing to
-install.
+Download from the Releases page. Everything it needs is in the download:
+nothing to install.
 
-Needs: 64-bit Linux with a desktop (X11, or Wayland with XWayland), 8 GB of
-memory, and disk space for the reference data (about 7 GB for the
-essentials, 55 GB free while the population reference is built, 19 GB
-afterwards).
+- **Linux**: `StrandOpen-<version>-linux-x86_64.tar.gz`. Unpack it anywhere
+  and run `./strandopen` inside (`./add-to-menu.sh` adds it to your
+  application menu). Needs 64-bit Linux with a desktop (X11, or Wayland with
+  XWayland).
+- **Windows**: `StrandOpen-<version>-windows-x86_64.zip`. Unzip it anywhere
+  and run `StrandOpen.exe` inside; keep the folder together. Windows may
+  warn the first time because the program is not signed with a paid
+  certificate: choose "More info", then "Run anyway". Needs 64-bit Windows 10
+  (version 1903 or later) or Windows 11.
+
+Both need 8 GB of memory and disk space for the reference data (about 7 GB
+for the essentials, 55 GB free while the population reference is built,
+19 GB afterwards).
 
 1. Start Strand Open. The People page opens.
 2. Download the reference data (one click). The essentials are about 3 GB
@@ -115,7 +122,8 @@ afterwards).
    choose it). The import runs in the background, usually 10 to 30 minutes.
 4. Open them. Each person's results are kept apart; add as many as you like.
 
-Your data folder defaults to `~/.local/share/StrandOpen`; "Change folder" on
+Your data folder defaults to `~/.local/share/StrandOpen` on Linux and
+`%LOCALAPPDATA%\StrandOpen` on Windows; "Change folder" on
 the People page starts using another one, for example on a bigger disk (what
 is already in the old folder stays there).
 
@@ -158,11 +166,14 @@ with a doctor or genetic counsellor.
 ## Building from source
 
     ./build.sh                  # build/strandopen (gcc 15+ for #embed)
+    ./build.sh windows          # build/windows/StrandOpen.exe (mingw-w64, cross-compiled)
 
 The program is C (raylib 6.2 and SQLite, both vendored); the import is
 Python 3 with numpy, driving bcftools, samtools, plink2, Java (PharmCAT) and
 hmmix. Release bundles ship all of these in `runtime/`, so nothing needs
-installing; when running from source they are found on your PATH.
+installing; when running from source they are found on your PATH. The
+Windows bundle (`tools/release_windows.sh`, made on Linux) carries Windows
+builds of the same tools and busybox for the import's shell steps.
 
     pipeline/setup.py --root DIR [--population]   # the reference data
     pipeline/run.py --profile DIR/profiles/NAME   # one person's import

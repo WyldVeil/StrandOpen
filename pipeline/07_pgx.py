@@ -12,6 +12,7 @@ Tables: pgx_gene (one row per gene: diplotype, phenotype, activity score,
 calls), pgx_drug (each drug's guidance from CPIC and DPWG)."""
 import glob
 import json
+import subprocess
 import re
 import shutil
 from strandlib import *
@@ -147,8 +148,9 @@ outside.append("MT-RNR1\t%s" % pick)
 ofile = os.path.join(OUT, "outside.tsv")
 open(ofile, "w").write("\n".join(outside) + "\n")
 log("outside calls:", "; ".join(outside))
-rc = os.system("java -jar %s -vcf %s -o %s -bf strand -po %s -reporterJson -matcher -phenotyper -reporter > %s/run.log 2>&1"
-               % (JAR, vcf, OUT, ofile, OUT))
+with open(os.path.join(OUT, "run.log"), "w") as runlog:     # an argument list: paths with spaces are safe
+    rc = subprocess.run(["java", "-jar", JAR, "-vcf", vcf, "-o", OUT, "-bf", "strand", "-po", ofile,
+                         "-reporterJson", "-matcher", "-phenotyper", "-reporter"], stdout=runlog, stderr=subprocess.STDOUT).returncode
 if rc != 0:
     print(open(os.path.join(OUT, "run.log")).read()[-3000:])
     raise SystemExit("PharmCAT failed")

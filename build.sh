@@ -71,6 +71,23 @@ case "${1:-native}" in
             -L"$BE/lib" -static-libgcc "${LIBS[@]}"
         echo "newest glibc symbol needed: $(objdump -T "$B/strandopen" | grep -o 'GLIBC_[0-9.]*' | sort -V | tail -1)"
         ls -la "$B/strandopen" ;;
+    windows)
+        # the Windows build, cross-compiled with mingw-w64: one static .exe
+        # (raylib with GLFW's Win32 backend, SQLite, src/win32.c on its own)
+        CC=x86_64-w64-mingw32-gcc
+        PFX=(-ffile-prefix-map="$ROOT"=.)
+        RLFLAGS=(-std=gnu99 -O2 -DPLATFORM_DESKTOP -DGRAPHICS_API_OPENGL_33
+                 -DSUPPORT_FILEFORMAT_JPG=1 -DSUPPORT_SCREEN_CAPTURE=0 -DSUPPORT_GPU_SKINNING=0
+                 -I"$RAYLIB" -I"$RAYLIB/external/glfw/include" "${PFX[@]}")
+        SQLFLAGS+=("${PFX[@]}")
+        B="$B/windows"
+        mkdir -p "$B/obj"
+        objs
+        "$CC" -std=gnu23 -O2 "${PFX[@]}" -Wall -Wextra -c "$ROOT/src/win32.c" -o "$B/obj/win32.o"
+        x86_64-w64-mingw32-windres --input-format=rc -O coff -I"$ROOT/assets/win" "$ROOT/assets/win/strandopen.rc" -o "$B/obj/res.o"
+        "$CC" "${STD[@]}" -O2 -D_FILE_OFFSET_BITS=64 "${PFX[@]}" "${WARN[@]}" "${INC[@]}" -o "$B/StrandOpen.exe" "$ROOT/game.c" "${OBJS[@]}" \
+            "$B/obj/win32.o" "$B/obj/res.o" -mwindows -static -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lshell32 -lole32 -luuid -lpthread
+        ls -la "$B/StrandOpen.exe" ;;
     sanitize)
         objs
         "$CC" "${STD[@]}" -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer "${WARN[@]}" "${INC[@]}" \

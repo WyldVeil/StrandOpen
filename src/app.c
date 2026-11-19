@@ -96,9 +96,14 @@ static void toastDraw(void) {
 /* a web page for a database record, opened only when the person clicks */
 static void openUrl(const char *url) {
     if (getenv("STRAND_NO_OPEN")) return;
+#ifdef _WIN32
+    if (!strncmp(url, "file://", 7)) { w32Open(url + 7); return; }     /* a saved file: its own program */
+    w32Open(url);
+#else
     char *argv[] = { "xdg-open", (char *)url, NULL };
     Proc p = spawnReader(argv);
     if (p.pid) reap(&p, false);
+#endif
     toast("Opened in your browser");
 }
 static void copyText(const char *s) {
@@ -531,6 +536,11 @@ static void stEnter(const char *name) {
         { "prs", PG_PRS }, { "ancestry", PG_ANCESTRY }, { "lineage", PG_LINEAGE }, { "raw", PG_RAW }, { "about", PG_ABOUT }, { "rare", PG_RARE }, { "rarity", PG_RARITY },
         { "brief", PG_BRIEF }, { "people", PG_PEOPLE }, { "diet", PG_DIET }, { "report", PG_REPORT },
     };
+    /* test hooks that work before anyone is imported: import:SLUG starts the import of an
+       existing person folder the way the People page does; setup:essentials|population
+       starts the reference download */
+    if (!strncmp(name, "import:", 7)) { printf("import started: %d\n", importStart(name + 7)); fflush(stdout); return; }
+    if (!strncmp(name, "setup:", 6)) { printf("setup started: %d\n", setupStart(!strcmp(name + 6, "population"))); fflush(stdout); return; }
     if (!g_stReady) return;
     char page[64] = "", arg[128] = "";
     sscanf(name, "%63[^:]:%127s", page, arg);

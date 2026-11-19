@@ -13,7 +13,6 @@
    ======================================================================== */
 
 #include <dirent.h>
-#include <sys/statvfs.h>
 
 static char g_profileSlug[64];
 
@@ -51,9 +50,15 @@ static void soResolveRoot(void) {
     if (e && *e) snprintf(g_root, sizeof g_root, "%s", e);
     else if (*c) snprintf(g_root, sizeof g_root, "%s", c);
     else {
+#ifdef _WIN32
+        char base[PATH_MAX];
+        if (w32Folder(W32_DATA, base, sizeof base)) snprintf(g_root, sizeof g_root, "%s/StrandOpen", base);
+        else snprintf(g_root, sizeof g_root, "%s/data", g_appDir);
+#else
         const char *x = getenv("XDG_DATA_HOME"), *h = getenv("HOME");
         if (x && *x) snprintf(g_root, sizeof g_root, "%s/StrandOpen", x);
         else snprintf(g_root, sizeof g_root, "%s/.local/share/StrandOpen", h && *h ? h : "/tmp");
+#endif
     }
     char p[1100];
     snprintf(p, sizeof p, "%s/profiles", g_root);
@@ -96,7 +101,7 @@ static void peopleScan(void) {
         if (kvRead(f, "done", v, sizeof v)) p->done = atoi(v);
         if (kvRead(f, "of", v, sizeof v)) p->of = atoi(v);
         /* a "running" import whose process is gone was interrupted */
-        if (!strcmp(p->state, "running") && kvRead(f, "pid", v, sizeof v) && kill(atoi(v), 0) != 0)
+        if (!strcmp(p->state, "running") && kvRead(f, "pid", v, sizeof v) && !procAlive(atol(v)))
             snprintf(p->state, sizeof p->state, "interrupted");
         snprintf(f, sizeof f, "%s/%s/db/strand.db", dir, e->d_name);
         p->hasDb = access(f, R_OK) == 0;
@@ -113,6 +118,10 @@ static void peopleScan(void) {
 /* a pipeline script, detached: a grandchild in its own session, so it survives
    the window; its output goes to logf */
 static bool spawnDetached(char *const argv[], const char *logf) {
+#ifdef _WIN32
+    unsigned pid = 0;
+    return w32Spawn(argv, logf, NULL, &pid, NULL);
+#else
     pid_t pid = fork();
     if (pid < 0) return false;
     if (pid == 0) {
@@ -128,6 +137,7 @@ static bool spawnDetached(char *const argv[], const char *logf) {
     int st;
     waitpid(pid, &st, 0);
     return true;
+#endif
 }
 
 /* the bundled Python (runtime/bin) first, then the system's */
@@ -184,7 +194,7 @@ static void setupScan(void) {
     if (kvRead(p, "total_bytes", v, sizeof v)) g_setup.total = atof(v);
     if (kvRead(p, "step", v, sizeof v)) g_setup.step = atoi(v);
     if (kvRead(p, "steps", v, sizeof v)) g_setup.steps = atoi(v);
-    if (!strcmp(g_setup.state, "running") && kvRead(p, "pid", v, sizeof v) && kill(atoi(v), 0) != 0)
+    if (!strcmp(g_setup.state, "running") && kvRead(p, "pid", v, sizeof v) && !procAlive(atol(v)))
         snprintf(g_setup.state, sizeof g_setup.state, "interrupted");
 }
 
@@ -208,8 +218,7 @@ static bool setupStart(bool population) {
 static float setupCard(float x, float y, float W) {
     bool running = !strcmp(g_setup.state, "running"), failed = !strcmp(g_setup.state, "failed") || !strcmp(g_setup.state, "interrupted");
     if (g_setup.essentials && g_setup.population && !running) return 0;
-    struct statvfs sv;
-    double freeGb = statvfs(g_root, &sv) == 0 ? (double)sv.f_bavail * (double)sv.f_frsize / 1e9 : 0;
+    double freeGb = freeBytes(g_root) / 1e9;
     static const char essText[] =
         "Strand Open compares a person's DNA with public reference data, downloaded once and shared by everyone you add. The essentials "
         "(about 3 GB to download, 7 GB on disk) cover health, traits, medicines and lineages. The population reference (about 33 GB more "
@@ -269,12 +278,8 @@ static float setupCard(float x, float y, float W) {
 static void profileOpen(const char *slug) {
     cfgSet("so.profile", slug);
     cfgSave();
-    char exe[PATH_MAX];
-    ssize_t n = readlink("/proc/self/exe", exe, sizeof exe - 1);
-    if (n <= 0) return;
-    exe[n] = 0;
-    char *argv[] = { exe, "--profile", (char *)slug, NULL };
-    execv(exe, argv);
+    char *args[] = { "--profile", (char *)slug, NULL };
+    relaunch(args);
 }
 
 /* ---- adding a person ---- */
@@ -283,6 +288,11 @@ static int g_addSex;               /* 0 not sure, 1 male, 2 female */
 static bool g_addOpen;
 
 static void addPick(void) {
+#ifdef _WIN32
+    char pick[1100];
+    if (w32PickFile(GetWindowHandle(), pick, sizeof pick)) snprintf(g_addPath, sizeof g_addPath, "%s", pick);
+    return;
+#endif
     char tool[1100];
     char *argv[8];
     if (findTool("kdialog", tool, sizeof tool)) {
@@ -312,6 +322,11 @@ static void addCreate(void) {
     if (!g_setup.essentials) { snprintf(g_addMsg, sizeof g_addMsg, "Download the reference data first (above): the import needs it."); return; }
     if (!g_addName[0]) { snprintf(g_addMsg, sizeof g_addMsg, "Give the person a name (any label you like)."); return; }
     if (stat(g_addPath, &st) != 0 || !S_ISREG(st.st_mode)) { snprintf(g_addMsg, sizeof g_addMsg, "That file cannot be read."); return; }
+    if (!pathToolSafe(g_addPath)) {
+        snprintf(g_addMsg, sizeof g_addMsg, "The import's tools cannot read this file's folder name on this computer (it has letters outside "
+                 "the system's character set). Move the file to a folder with a plain name, such as C:\\DNA, and choose it there.");
+        return;
+    }
     char slug[16];
     unsigned seed = (unsigned)time(NULL) ^ (unsigned)getpid();
     for (int tries = 0; tries < 50; tries++) {
@@ -339,6 +354,10 @@ static void addCreate(void) {
 static void rootChange(void) {
     char tool[1100], buf[1100] = "";
     Proc p = { 0 };
+#ifdef _WIN32
+    (void)tool; (void)p;
+    if (!w32PickFolder(GetWindowHandle(), "Choose where Strand Open keeps its data", buf, sizeof buf)) return;
+#else
     if (findTool("kdialog", tool, sizeof tool)) {
         char *a[] = { tool, "--getexistingdirectory", g_root, NULL };
         p = spawnReader(a);
@@ -352,16 +371,12 @@ static void rootChange(void) {
     if (n <= 0) return;
     buf[n] = 0;
     buf[strcspn(buf, "\r\n")] = 0;
+#endif
     if (!*buf || !strcmp(buf, g_root) || access(buf, W_OK) != 0) return;
     cfgSet("so.root", sstr("%s/StrandOpen", buf));
     cfgSet("so.profile", "");
     cfgSave();
-    char exe[PATH_MAX];
-    ssize_t m = readlink("/proc/self/exe", exe, sizeof exe - 1);
-    if (m <= 0) return;
-    exe[m] = 0;
-    char *argv[] = { exe, NULL };
-    execv(exe, argv);
+    relaunch(NULL);
 }
 
 static void peopleDrops(void) {
@@ -456,10 +471,14 @@ static void pagePeople(Rectangle r) {
         if (gxButtonEx(gxId("add cancel"), (Rectangle){ c.x + 312, by, 110, 32 }, "Cancel", BTN_GHOST, true, NULL)) { g_addOpen = false; g_addMsg[0] = 0; }
         y += c.height + 16;
     }
-    struct statvfs sv;
-    if (statvfs(g_root, &sv) == 0)
+    double fb = freeBytes(g_root);
+    if (fb > 0)
         txtIn(F_REG, TH->fsTiny + 1, (Rectangle){ x, y + 8, W - 190, 16 }, TH->faint, 0,
-              sstr("Data folder: %s (%.0f GB free)", g_root, (double)sv.f_bavail * (double)sv.f_frsize / 1e9));
+              sstr("Data folder: %s (%.0f GB free)", g_root, fb / 1e9));
+    if (!pathToolSafe(g_root))
+        txtIn(F_REG, TH->fsSmall, (Rectangle){ x, y + 30, W - 190, 40 }, TH->warn, 0,
+              "This folder's name has letters the import's tools cannot read on this computer, so imports would fail. "
+              "Choose a folder with a plain name (Change folder...), such as C:\\StrandOpen.");
     if (gxButtonEx(gxId("people root"), (Rectangle){ x + W - 170, y, 170, 30 }, "Change folder...", BTN_GHOST, true,
                    "Keep the reference data and everyone's results somewhere else (a bigger disk); the program restarts there"))
         rootChange();

@@ -8,6 +8,7 @@ for missense changes, and writes one row per variant allele.
 Tables: variant (+ indexes), gene.nvar / gene.ncoding filled in."""
 import re
 import subprocess
+from shlex import quote as shq
 from strandlib import *
 
 ANNOT = os.path.join(WORK, "variants.annot.vcf.gz")
@@ -191,7 +192,7 @@ rows = []
 nrow = 0
 AMKEYS = {}   # (chr, pos, ref, alt) of missense SNVs -> variant id
 INS = "INSERT INTO variant VALUES(" + ",".join("?" * 39) + ")"
-for line in pipe_lines("bcftools query -f '%s' %s" % (fmt.replace("'", "'\\''"), src)):
+for line in pipe_lines("bcftools query -f '%s' %s" % (fmt.replace("'", "'\\''"), shq(src))):
     p = line.rstrip("\n").split("\t")
     chrom = p[0]
     if chrom not in CHROM_IDX:
@@ -279,7 +280,7 @@ log("variants inserted", nrow, "missense SNVs", len(AMKEYS))
 # AlphaMissense: one pass over the 71M precomputed scores, keeping the sample's
 am = os.path.join(RAW, "AlphaMissense_hg38.tsv.gz")
 if os.path.exists(am):
-    for line in pipe_lines("zcat " + am):
+    for line in pipe_lines("zcat " + shq(am)):
         if line[0] == "#":
             continue
         p = line.split("\t", 10)

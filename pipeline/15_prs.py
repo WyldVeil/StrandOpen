@@ -16,6 +16,7 @@ import gzip
 import re
 import json
 import subprocess
+from shlex import quote as shq
 import numpy as np
 from strandlib import *
 from genotype import Genotyper
@@ -221,8 +222,8 @@ for c in [str(i) for i in range(1, 23)]:
         for vid, ref, alt, pos, wv in rows:
             f.write("%s\t%s\t%s\n" % (vid, alt, "\t".join("%.6g" % x for x in wv)))
     pf = os.path.join(P, "pgen", "chr%s" % c)
-    subprocess.run(f"plink2 --pfile {pf} --score {wf} 1 2 header-read cols=scoresums,denom no-mean-imputation --score-col-nums 3-{K + 2} "
-                   f"--threads {NPROC} --out {OUT}/s{c} > {OUT}/s{c}.log 2>&1", shell=True, check=True)
+    subprocess.run(f"plink2 --pfile {shq(pf)} --score {shq(wf)} 1 2 header-read cols=scoresums,denom no-mean-imputation --score-col-nums 3-{K + 2} "
+                   f"--threads {NPROC} --out {shq(f'{OUT}/s{c}')} > {shq(f'{OUT}/s{c}.log')} 2>&1", shell=True, check=True)
     # reference scores
     with open(f"{OUT}/s{c}.sscore") as f:
         h = f.readline().lstrip("#").split()

@@ -67,7 +67,7 @@ static void genomeInit(void) {
             if (c && !strcmp(name, g_chromNames[c])) g_fai[c] = (StFai){ len, off, lb, lw, true };
         }
         fclose(f);
-        g_faFd = open(fa, O_RDONLY | O_CLOEXEC);
+        g_faFd = open(fa, O_RDONLY | O_CLOEXEC | O_BINARY);
     }
 }
 static bool refAvailable(void) { return g_faFd >= 0; }

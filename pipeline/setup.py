@@ -253,9 +253,10 @@ def main():
             f.write(time.strftime("%Y-%m-%d %H:%M:%S\n"))
         if a.population:
             prog.set(phase="Building the 1000 Genomes reference (about an hour)", item="")
-            run(["bash", os.path.join(HERE, "04_1kg.sh")], env, logf)
+            # Windows has no bash: the same work in Python (identical output, checked on Linux)
+            run([sys.executable, "-B", os.path.join(HERE, "kg_build.py")] if os.name == "nt" else ["bash", os.path.join(HERE, "04_1kg.sh")], env, logf)
             prog.set(phase="Building the African outgroup for Neanderthal DNA", item="")
-            run(["bash", os.path.join(HERE, "setup_archaic.sh")], env, logf)
+            run([sys.executable, "-B", os.path.join(HERE, "archaic_build.py")] if os.name == "nt" else ["bash", os.path.join(HERE, "setup_archaic.sh")], env, logf)
             if not a.keep_panel:
                 for dest, url, about in POPULATION:
                     if dest.startswith("1kg/"):

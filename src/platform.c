@@ -4,7 +4,8 @@
    The application loop (window, frames, the command-line test harness),
    a small settings file, child processes with a pipe, threads, atomic file
    writes, logging and checked allocation. Everything sits on raylib and
-   POSIX; nothing else is needed at run time.
+   POSIX; on Windows the few system calls that differ go through
+   src/win32.c (compiled on its own: windows.h and raylib.h clash).
 
    Command line:
      --size W H            initial window size
@@ -13,6 +14,9 @@
      --profile SLUG        open this person (see profile.c)
    ======================================================================== */
 
+#ifdef _WIN32
+#define _POSIX_THREAD_SAFE_FUNCTIONS 200112L     /* localtime_r */
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +33,33 @@
 #include <pthread.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#ifdef _WIN32
+#include <io.h>
+#include <direct.h>
+#include "win32.h"
+#undef PATH_MAX
+#define PATH_MAX 1024
+#define mkdir(p, m) _mkdir(p)
+#define fsync(fd) _commit(fd)
+#define O_CLOEXEC 0                       /* nothing is inherited unless asked for */
+#ifndef rand_r
+static int rand_r(unsigned *s) { *s = *s * 1103515245u + 12345u; return (int)((*s >> 16) & 0x7fff); }
+#endif
+/* a positioned read (thread-safe; the build sets 64-bit off_t for the 3 GB reference) */
+static ssize_t pread(int fd, void *buf, size_t n, off_t off) { return (ssize_t)w32Pread(fd, buf, n, (long long)off); }
+static char *strcasestr(const char *h, const char *n) {
+    size_t m = strlen(n);
+    if (!m) return (char *)h;
+    for (; *h; h++) if (!_strnicmp(h, n, m)) return (char *)h;
+    return NULL;
+}
+#else
+#include <sys/statvfs.h>
 #include <sys/wait.h>
+#endif
+#ifndef O_BINARY
+#define O_BINARY 0                        /* Windows only: no newline translation */
+#endif
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -74,12 +104,27 @@ static bool mkdirs(const char *path, mode_t mode) {
     for (char *p = tmp + 1; *p; p++) {
         if (*p != '/') continue;
         *p = 0;
-        if (mkdir(tmp, mode) != 0 && errno != EEXIST) return false;
+        if (mkdir(tmp, mode) != 0 && errno != EEXIST && access(tmp, F_OK) != 0) return false;
         *p = '/';
     }
     return mkdir(tmp, mode) == 0 || errno == EEXIST;
 }
 static void platformDirs(const char *argv0) {
+#ifdef _WIN32
+    char exe[PATH_MAX], base[PATH_MAX];
+    if (!w32ExePath(exe, sizeof exe)) snprintf(exe, sizeof exe, "%s", argv0);
+    char *cut = strrchr(exe, '/');
+    if (cut) *cut = 0;
+    snprintf(g_appDir, sizeof g_appDir, "%s", exe);
+    if (w32Folder(W32_CONFIG, base, sizeof base)) snprintf(g_cfgDir, sizeof g_cfgDir, "%s/StrandOpen", base);
+    else snprintf(g_cfgDir, sizeof g_cfgDir, "%s/settings", g_appDir);
+    mkdirs(g_cfgDir, 0700);
+    /* the bundled programs, for every child: PATH and their variables */
+    char rt[PATH_MAX + 16], cache[PATH_MAX + 32] = "";
+    snprintf(rt, sizeof rt, "%s/runtime", g_appDir);
+    if (w32Folder(W32_DATA, base, sizeof base)) snprintf(cache, sizeof cache, "%s/StrandOpen/numba", base);
+    if (access(rt, F_OK) == 0) w32RuntimeEnv(rt, cache);
+#else
     char exe[PATH_MAX];
     ssize_t n = readlink("/proc/self/exe", exe, sizeof exe - 1);
     if (n <= 0) { snprintf(exe, sizeof exe, "%s", argv0); n = (ssize_t)strlen(exe); }
@@ -91,6 +136,7 @@ static void platformDirs(const char *argv0) {
     if (x && *x) snprintf(g_cfgDir, sizeof g_cfgDir, "%s/StrandOpen", x);
     else snprintf(g_cfgDir, sizeof g_cfgDir, "%s/.config/StrandOpen", h && *h ? h : "/tmp");
     mkdirs(g_cfgDir, 0700);
+#endif
 }
 
 /* ---- logging: standard error and a log file beside the settings -------- */
@@ -114,7 +160,11 @@ __attribute__((format(printf, 1, 2))) static void logBoth(const char *fmt, ...) 
 [[nodiscard]] static bool commitFile(FILE *f, const char *tmp, const char *final) {
     bool ok = fflush(f) == 0 && fsync(fileno(f)) == 0;
     ok = (fclose(f) == 0) && ok;
+#ifdef _WIN32
+    if (ok) ok = w32Replace(tmp, final);       /* rename() will not replace a file on Windows */
+#else
     if (ok) ok = rename(tmp, final) == 0;
+#endif
     if (!ok) unlink(tmp);
     return ok;
 }
@@ -167,7 +217,71 @@ static bool cfgSave(void) {
    spawnReader starts argv[0] (a full path or a name found by findTool) with
    stdin and stderr on /dev/null and its stdout on a pipe; reap closes the
    pipe, optionally stops the child, and waits for it. */
-typedef struct { pid_t pid; int fd; } Proc;
+typedef struct { pid_t pid; int fd; void *h; } Proc;    /* h: the process handle on Windows */
+
+#ifdef _WIN32
+/* the bundled runtime (python.exe, bcftools.exe...) first, then PATH */
+static bool findTool(const char *name, char *out, size_t n) {
+    char p[PATH_MAX + 64];
+    const char *exe = !strcmp(name, "python3") ? "python" : name;
+    const char *pre[3] = { "%s/runtime/tools/%s.exe", "%s/runtime/env/%s.exe", "%s/runtime/jre/bin/%s.exe" };
+    for (int i = 0; i < 3; i++) {
+        snprintf(p, sizeof p, pre[i], g_appDir, exe);
+        if (access(p, F_OK) == 0) { snprintf(out, n, "%s", p); return true; }
+    }
+    const char *path = getenv("PATH");
+    if (!path) return false;
+    char buf[8192];
+    snprintf(buf, sizeof buf, "%s", path);
+    for (char *save = NULL, *d = strtok_s(buf, ";", &save); d; d = strtok_s(NULL, ";", &save)) {
+        snprintf(p, sizeof p, "%s/%s.exe", d, exe);
+        if (access(p, F_OK) == 0) { snprintf(out, n, "%s", p); return true; }
+    }
+    return false;
+}
+
+static Proc spawnReader(char *const argv[]) {
+    Proc pr = { 0, -1, NULL };
+    char exe[PATH_MAX];
+    if (strchr(argv[0], '/') || strchr(argv[0], '\\')) snprintf(exe, sizeof exe, "%s", argv[0]);
+    else if (!findTool(argv[0], exe, sizeof exe)) return pr;
+    char *a[64];
+    int k = 0;
+    a[k++] = exe;
+    for (int i = 1; argv[i] && k < 63; i++) a[k++] = argv[i];
+    a[k] = NULL;
+    unsigned pid = 0;
+    int fd = -1;
+    void *h = NULL;
+    if (!w32Spawn(a, NULL, &fd, &pid, &h)) return pr;
+    pr.pid = (pid_t)pid;
+    pr.fd = fd;
+    pr.h = h;
+    return pr;
+}
+static int reap(Proc *p, bool stop) {
+    if (p->fd >= 0) { close(p->fd); p->fd = -1; }
+    if (p->pid <= 0) return -1;
+    int rc = w32Wait(p->h, stop);
+    p->h = NULL;
+    p->pid = 0;
+    return rc;
+}
+static bool procAlive(long pid) { return pid > 0 && w32Alive((unsigned)pid); }
+static bool pathToolSafe(const char *p) { return w32ToolsCanRead(p); }
+static double freeBytes(const char *path) { return w32FreeBytes(path); }
+/* start this program again with these arguments (after argv[0]) and leave */
+static void relaunch(char *const args[]) {
+    char exe[PATH_MAX];
+    if (!w32ExePath(exe, sizeof exe)) return;
+    char *a[16];
+    int k = 0;
+    a[k++] = exe;
+    for (int i = 0; args && args[i] && k < 15; i++) a[k++] = args[i];
+    a[k] = NULL;
+    if (w32Relaunch(a)) _exit(0);
+}
+#else
 
 static bool findTool(const char *name, char *out, size_t n) {
     char p[PATH_MAX + 64];
@@ -189,7 +303,7 @@ static bool findTool(const char *name, char *out, size_t n) {
 }
 
 static Proc spawnReader(char *const argv[]) {
-    Proc pr = { 0, -1 };
+    Proc pr = { 0, -1, NULL };
     int fds[2];
     if (pipe(fds) != 0) return pr;
     char exe[PATH_MAX];
@@ -222,6 +336,27 @@ static int reap(Proc *p, bool stop) {
     p->pid = 0;
     return WIFEXITED(st) ? WEXITSTATUS(st) : -1;
 }
+
+static bool procAlive(long pid) { return pid > 0 && kill((pid_t)pid, 0) == 0; }
+static bool pathToolSafe(const char *p) { (void)p; return true; }
+static double freeBytes(const char *path) {
+    struct statvfs sv;
+    return statvfs(path, &sv) == 0 ? (double)sv.f_bavail * (double)sv.f_frsize : 0;
+}
+/* replace this program with a fresh copy given these arguments (after argv[0]) */
+static void relaunch(char *const args[]) {
+    char exe[PATH_MAX];
+    ssize_t n = readlink("/proc/self/exe", exe, sizeof exe - 1);
+    if (n <= 0) return;
+    exe[n] = 0;
+    char *a[16];
+    int k = 0;
+    a[k++] = exe;
+    for (int i = 0; args && args[i] && k < 15; i++) a[k++] = args[i];
+    a[k] = NULL;
+    execv(exe, a);
+}
+#endif
 
 /* ---- threads ------------------------------------------------------------ */
 static bool thrStart(pthread_t *t, void *(*fn)(void *), void *arg, const char *what) {

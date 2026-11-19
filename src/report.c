@@ -38,10 +38,14 @@ static void htmlRows(FILE *f, const char *sql, const char *const *heads, int nco
     rowsFree(&r);
 }
 static bool reportDocsDir(char *out, size_t n) {
+#ifdef _WIN32
+    if (!w32Folder(W32_DOCUMENTS, out, n)) return false;
+#else
     const char *x = getenv("XDG_DOCUMENTS_DIR"), *home = getenv("HOME");
     if (x && *x) snprintf(out, n, "%s", x);
     else if (home && *home) snprintf(out, n, "%s/Documents", home);
     else return false;
+#endif
     mkdir(out, 0755);
     struct stat st;
     return stat(out, &st) == 0 && S_ISDIR(st.st_mode);
@@ -109,9 +113,13 @@ static void exportReport(void) {
     if (!commitFile(f, tmp, path)) { toast("Could not save the summary"); return; }
     toast("Saved to Documents: Strand summary %s.html", day);
     if (getenv("STRAND_NO_OPEN")) { printf("report: %s\n", path); return; }
+#ifdef _WIN32
+    w32Open(path);
+#else
     char url[1300];
     snprintf(url, sizeof url, "file://%s", path);
     char *argv[] = { "xdg-open", url, NULL };
     Proc p = spawnReader(argv);
     if (p.pid) reap(&p, false);
+#endif
 }

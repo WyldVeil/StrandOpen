@@ -20,6 +20,7 @@ import glob
 import json
 import shutil
 import subprocess
+import sys
 from strandlib import *
 
 con = db()
@@ -27,7 +28,13 @@ cur = con.cursor()
 A = os.path.join(WORK, "archaic")
 os.makedirs(A, exist_ok=True)
 OG = os.environ.get("STRANDOPEN_ARCHAIC", os.path.join(KG, "archaic"))
-HM = shutil.which("hmmix") or ""
+# hmmix: its command on PATH (the Linux bundle's launcher), or else its module in this
+# Python (the Windows bundle installs it there, with no command of its own)
+HM = [shutil.which("hmmix")] if shutil.which("hmmix") else []
+if not HM:
+    import importlib.util
+    if importlib.util.find_spec("hmm_functions") and importlib.util.find_spec("main"):
+        HM = [sys.executable, "-c", "import sys; from main import main; sys.argv[0] = 'hmmix'; sys.exit(main())"]
 og_parts = sorted(glob.glob(os.path.join(OG, "og_chr*.tsv")))
 if not HM or len(og_parts) < 22:
     log("hmmix or the African outgroup is missing (Setup builds it): skipped")
@@ -37,7 +44,7 @@ sample = "SAMPLE"
 
 def run(args, **kw):
     log("hmmix", args[0])
-    r = subprocess.run([HM] + args, cwd=A, capture_output=True, text=True, **kw)
+    r = subprocess.run(HM + args, cwd=A, capture_output=True, text=True, **kw)
     if r.returncode:
         raise SystemExit("hmmix %s failed: %s" % (args[0], r.stderr[-600:]))
 
@@ -114,8 +121,11 @@ ren = os.path.join(A, "chr.txt")
 with open(ren, "w") as f:
     f.write("".join("%d chr%d\n" % (c, c) for c in range(1, 23)))
 src = os.path.join(WORK, "variants.annot.vcf.gz")
-subprocess.run("bcftools view -f PASS -v snps -r %s '%s' -Ou | bcftools annotate --rename-chrs '%s' -Ou | bcftools reheader -s <(echo '%s') "
-               "| bcftools view -Oz -o '%s' && bcftools index -f '%s'" % (",".join(str(c) for c in range(1, 23)), src, ren, sample, vcf, vcf),
+name = os.path.join(A, "ingroup_name.txt")    # the sample's name in the outgroup's terms (a file, not <(...): no bash needed)
+with open(name, "w", newline="\n") as f:
+    f.write(sample + "\n")
+subprocess.run("bcftools view -f PASS -v snps -r %s '%s' -Ou | bcftools annotate --rename-chrs '%s' -Ou | bcftools reheader -s '%s' "
+               "| bcftools view -Oz -o '%s' && bcftools index -f '%s'" % (",".join(str(c) for c in range(1, 23)), src, ren, name, vcf, vcf),
                shell=True, check=True, executable="/bin/bash", capture_output=True)
 json.dump({"ingroup": [sample], "outgroup": []}, open(os.path.join(A, "ingroup.json"), "w"))
 

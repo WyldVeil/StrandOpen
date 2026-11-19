@@ -16,6 +16,7 @@
 
 Tables: anc_pop, anc_admix, anc_pca, anc_paint, anc_closest."""
 import subprocess
+from shlex import quote as shq
 import numpy as np
 from strandlib import *
 from genotype import Genotyper
@@ -63,15 +64,15 @@ if CHIP:
         for c, pos in cur.execute("SELECT chrom, start FROM refblock WHERE chrom<=22 UNION SELECT chrom, pos FROM variant WHERE chrom<=22 "
                                   "AND length(ref)=1 AND length(alt)=1 ORDER BY 1, 2"):
             f.write("%d\t%d\t%d\n" % (c, pos, pos))
-    extract = "--extract bed1 " + tb
+    extract = "--extract bed1 " + shq(tb)
 beds = []
 for c in range(1, 23):
     pf = os.path.join(P, "pgen", "chr%d" % c)
     out = os.path.join(A, "panel%s%d" % (tag, c))
     if not os.path.exists(out + ".bed"):
-        subprocess.run(f"plink2 --pfile {pf} --maf 0.05 --snps-only just-acgt {extract} --exclude range {rng} --indep-pairwise 500kb 1 0.1 "
-                       f"--threads {NPROC} --out {out} > {out}.log 2>&1", shell=True, check=True)
-        subprocess.run(f"plink2 --pfile {pf} --extract {out}.prune.in --make-bed --threads {NPROC} --out {out} >> {out}.log 2>&1", shell=True, check=True)
+        subprocess.run(f"plink2 --pfile {shq(pf)} --maf 0.05 --snps-only just-acgt {extract} --exclude range {shq(rng)} --indep-pairwise 500kb 1 0.1 "
+                       f"--threads {NPROC} --out {shq(out)} > {shq(out + '.log')} 2>&1", shell=True, check=True)
+        subprocess.run(f"plink2 --pfile {shq(pf)} --extract {shq(out + '.prune.in')} --make-bed --threads {NPROC} --out {shq(out)} >> {shq(out + '.log')} 2>&1", shell=True, check=True)
     beds.append(out)
 fam = [l.split() for l in open(beds[0] + ".fam")]
 samples = [x[1] for x in fam]
